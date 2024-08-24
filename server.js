@@ -1,6 +1,6 @@
-const express = require("express");
-const alunosRoutes = require("./src/alunos/routes");
-const swaggerDocs = require('./swagger');
+import express from 'express';
+import alunosRoutes from './src/alunos/routes.js';
+import swaggerDocs from './swagger.js';
 
 const app = express();
 const port = 3000;
@@ -16,3 +16,4 @@ app.use("/api/generation", alunosRoutes);
 swaggerDocs(app);
 
 app.listen(port, () => console.log(`app na porta ${port}`));
+

@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const controller = require("./controller");
+import { Router } from 'express';
+import * as controller from './controller.js';
 
 const router = Router();
 
@@ -123,4 +123,4 @@ router.put("/:id", controller.updateAluno);
  */
 router.delete("/:id", controller.removeAluno);
 
-module.exports = router;
+export default router;

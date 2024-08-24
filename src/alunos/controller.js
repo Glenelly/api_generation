@@ -1,47 +1,44 @@
-const pool = require('../../db');
-const queries = require('./queries');
+import pool from '../../db.js';
+import * as queries from './queries.js';
 
 const getAlunos = (req, res) => {
     pool.query(queries.getAlunos, (error, results) => {
-        if (error) throw error
-        res.status(200).json(results.rows)
+        if (error) throw error;
+        res.status(200).json(results.rows);
     });
 };
 
 const getAlunosPorId = (req, res) => {
     const id = parseInt(req.params.id);
-    pool.query(queries.getAlunosPorId, [id], (error, results) =>{
+    pool.query(queries.getAlunosPorId, [id], (error, results) => {
+        if (error) return res.status(500).send("Erro ao buscar aluno.");
+        if (!results.rows.length) return res.status(404).send("Aluno não encontrado.");
         res.status(200).json(results.rows);
-    })
-}
+    });
+};
 
 const addAluno = (req, res) => {
-    const { nome, idade, notaprimeirosemestre, 
-        notasegundosemestre, nomeprofessor, numerosala} = req.body;
+    const { nome, idade, notaprimeirosemestre, notasegundosemestre, nomeprofessor, numerosala } = req.body;
 
-    pool.query(queries.addAluno, [nome, idade, notaprimeirosemestre, 
-        notasegundosemestre, nomeprofessor, numerosala], (error, results) =>{
-            if (error) throw error;
-            res.status(201).send("Alunos criado com sucesso!")
-            console.log("Aluno criado!")
-        });
-}
+    pool.query(queries.addAluno, [nome, idade, notaprimeirosemestre, notasegundosemestre, nomeprofessor, numerosala], (error) => {
+        if (error) return res.status(500).send("Erro ao criar aluno.");
+        res.status(201).send("Aluno criado com sucesso!");
+    });
+};
 
 const removeAluno = (req, res) => {
     const id = parseInt(req.params.id);
 
-    pool.query(queries.getAlunosPorId,[id], (error, results) => {
-        const nenhumAlunoEncontrado = !results.rows.length;
-        if (nenhumAlunoEncontrado){
-            res.send("Aluno não existe no banco de dados.");
-        }
+    pool.query(queries.getAlunosPorId, [id], (error, results) => {
+        if (error) return res.status(500).send("Erro ao buscar aluno.");
+        if (!results.rows.length) return res.status(404).send("Aluno não encontrado.");
 
-    pool.query(queries.removeAluno, [id], (error, results) => {
-        if (error) throw error;
-        res.status(200).send("Aluno removido com sucesso!")
-    } );
-    } );
-}
+        pool.query(queries.removeAluno, [id], (error) => {
+            if (error) return res.status(500).send("Erro ao remover aluno.");
+            res.status(200).send("Aluno removido com sucesso!");
+        });
+    });
+};
 
 const updateAluno = (req, res) => {
     const id = parseInt(req.params.id);
@@ -52,28 +49,20 @@ const updateAluno = (req, res) => {
     }
 
     pool.query(queries.getAlunosPorId, [id], (error, results) => {
-        if (error) {
-            return res.status(500).send("Erro ao buscar aluno.");
-        }
-        const nenhumAlunoEncontrado = !results.rows.length;
-        if (nenhumAlunoEncontrado) {
-            return res.status(404).send("Este aluno não existe no banco de dados.");
-        }
+        if (error) return res.status(500).send("Erro ao buscar aluno.");
+        if (!results.rows.length) return res.status(404).send("Aluno não encontrado.");
 
-        pool.query(queries.updateAluno, [nome, idade, notaprimeirosemestre, notasegundosemestre, nomeprofessor, numerosala, id], (error, results) => {
-            if (error) {
-                return res.status(500).send("Erro ao atualizar aluno.");
-            }
+        pool.query(queries.updateAluno, [nome, idade, notaprimeirosemestre, notasegundosemestre, nomeprofessor, numerosala, id], (error) => {
+            if (error) return res.status(500).send("Erro ao atualizar aluno.");
             res.status(200).send("Aluno atualizado com sucesso!");
         });
     });
-}
+};
 
-
-module.exports = {
+export {
     getAlunos,
     getAlunosPorId,
     addAluno,
     removeAluno,
     updateAluno
-}
+};
