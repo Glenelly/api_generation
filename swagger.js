@@ -11,7 +11,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000/api/generation',
+                url: process.env.SERVER_URL || 'http://localhost:3000/api/generation',
             },
         ],
     },
