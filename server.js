@@ -6,10 +6,8 @@ import swaggerDocs from './swagger.js';
 const app = express();
 const port = 3000;
 
-// Habilitar CORS para todas as rotas
-app.use(cors());
-
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
